@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use("/metrics", metricsRouter);
-app.get("/health/db", async (req, res) => {
+app.get("/health/db", async (_req, res) => {
   try {
     const database = await checkDatabase();
     res.status(200).json({

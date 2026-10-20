@@ -29,7 +29,40 @@ router.get("/latest", async (req, res) => {
     });
   }
 });
+router.get("/history", async (req, res) => {
+  const requestedLimit = Number(req.query.limit ?? 10);
 
+  if (
+    !Number.isInteger(requestedLimit) ||
+    requestedLimit < 1 ||
+    requestedLimit > 100
+  ) {
+    return res.status(400).json({
+      error: "Limit must be an integer between 1 and 100",
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `SELECT id, recorded_at, cpu_percent, memory_percent, disk_percent
+             FROM metric_samples
+             ORDER BY recorded_at DESC, id DESC
+             LIMIT $1`,
+      [requestedLimit],
+    );
+
+    return res.status(200).json({
+      count: result.rows.length,
+      data: result.rows,
+    });
+  } catch (error) {
+    console.error("Failed to retrieve metric history:", error.message);
+
+    return res.status(500).json({
+      error: "Failed to retrieve metric history",
+    });
+  }
+});
 router.post("/", async (req, res) => {
   const { cpu_percent, memory_percent, disk_percent } = req.body;
   const metrics = [cpu_percent, memory_percent, disk_percent];

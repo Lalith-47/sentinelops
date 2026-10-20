@@ -14,7 +14,7 @@ API_URL = os.getenv(
     "http://127.0.0.1:3000/metrics",
 )
 
-INTERVAL_SECONDS = 10
+INTERVAL_SECONDS = 0
 
 
 def collect_metrics() -> dict:
