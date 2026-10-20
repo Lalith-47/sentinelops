@@ -1,11 +1,13 @@
 import express from "express";
 import { checkDatabase } from "./db.js";
 import metricsRouter from "./routes/metrics.js";
+import servicesRouter from "./routes/services.js";
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use("/metrics", metricsRouter);
+app.use("/api/v1/services", servicesRouter);
 app.get("/health/db", async (_req, res) => {
   try {
     const database = await checkDatabase();
